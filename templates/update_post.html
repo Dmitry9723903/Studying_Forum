@@ -1,0 +1,12 @@
+{% extends 'index.html' %}
+
+{% block content %}
+    <h1>update post</h1>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button href="{% url 'index' %}">Update Post</button>
+
+    </form>
+
+{% endblock %}

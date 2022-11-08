@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" 
+        rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" 
+        crossorigin="anonymous"
+    >
+    <title>Forum</title>
+    
+</head>
+<body>
+   {% include 'navbar.html' %}  
+    <div class="container"> 
+       
+        {% block content %}
+          <h1>Forum</h1>
+          {% if messages %}
+            {% for message in messages %}
+              {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                <div class="alert alert-danger" role="alert">
+                  {{ message }}
+                </div>
+              {% else %}
+                <div class="alert alert-{{ message.tags }}" role="alert">
+                  {{ message }}
+                </div>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+       
+          {% if user.is_superuser or user.is_staff %}
+          <a href="{% url 'create_post' %}" class="btn btn-outline-primary block">Create new post</a>
+          <a href="{% url 'upload' %}" class="btn btn-outline-secondary block">Upload files</a>
+          <a href="{% url 'download' %}" class="btn btn-outline-secondary block">Download files</a>
+          {% endif %}
+          <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Title</th>
+                  <th scope="col">Description</th>
+                  <th scope="col">Created_at</th>
+                  {% if user.is_superuser or user.is_staff %}
+                  <th scope="col">Edit</th>
+                  <th scope="col">Delite</th>
+                  {% endif %}
+                </tr>
+              </thead>
+              <tbody>
+                {% if object_list %}
+                  {% for post in object_list %}
+                      <tr>
+                      <td><a href="{% url 'detail_post' post.pk %}">{{ post.title }}</a></td>
+                      <td>{{ post.description }}</td>
+                      <th scope="row">{{ post.created_at }}</th>
+                      {% if user.is_superuser or user.is_staff %}
+                      <td><a href="{% url 'update_post' post.pk %}" class="btn btn-outline-primary">Edit</a></td>
+                      <td><a href="{% url 'delete_post' post.pk %}" class="btn btn-outline-danger">Delite</a></td>
+                      {% endif %}
+                      </tr>
+                  {% endfor %}
+                {% else %}
+                    <p>No post</p>
+                {% endif %}
+              </tbody>
+            </table>
+
+          {% endblock %}
+
+    </div>
+  
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" 
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+</script>
+</html>
